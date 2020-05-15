@@ -19,14 +19,14 @@ export class UserController {
     }
 
     @Post()
-    @UseGuards(TokenGuard, JwtAuthGuard)
+    // @UseGuards(TokenGuard, JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     createUser(@Body() data: UserDTO){
         return this.userService.saveUser(data)
     }
 
     @Post(':id/image')
-    @UseGuards(TokenGuard, JwtAuthGuard)
+    // @UseGuards(TokenGuard, JwtAuthGuard)
     @UseInterceptors(
         FileInterceptor('image', {
           storage: diskStorage({
