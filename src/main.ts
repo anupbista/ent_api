@@ -21,7 +21,7 @@ async function bootstrap() {
     }
 	app.enableCors(cors_options);
 	app.setGlobalPrefix('api/v1');
-	app.useStaticAssets(join(__dirname, '..', 'uploads'));
+	app.useStaticAssets(join(__dirname, 'uploads'));
 	const options = new DocumentBuilder()
 		.setTitle('Ent API')
 		.setDescription('API for Ent')
