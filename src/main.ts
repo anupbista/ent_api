@@ -12,9 +12,9 @@ async function bootstrap() {
 	const cors_options = {
         "origin": "*",
         "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-        "preflightContinue": false,
         "optionsSuccessStatus": 204,
-        "credentials":true
+		"credentials":true,
+		allowedHeaders: "Content-Type, Accept",
     }
 	app.enableCors(cors_options);
 	app.setGlobalPrefix('api/v1');
