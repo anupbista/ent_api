@@ -9,14 +9,14 @@ const port = process.env.PORT || 8080;
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	const options = {
+	const cors_options = {
         "origin": "*",
         "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
         "preflightContinue": false,
         "optionsSuccessStatus": 204,
         "credentials":true
     }
-	app.enableCors(options);
+	app.enableCors(cors_options);
 	app.setGlobalPrefix('api/v1');
 
 	const options = new DocumentBuilder()
