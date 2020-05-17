@@ -12,7 +12,7 @@ async function bootstrap() {
 	const cors_options = {
         "origin": "*",
         "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-        "preflightContinue": true,
+        "preflightContinue": false,
         "optionsSuccessStatus": 204,
 		"credentials":true,
 		"allowedHeaders": "Content-Type, Accept, Origin, Authorization",
