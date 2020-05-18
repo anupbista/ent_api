@@ -33,7 +33,10 @@ import {
     @Column('text')
     role: string;
 
-    @Column('text')
+    @Column({
+      type: 'text',
+      nullable: true,
+    }))
     imagepath: string;
 
     @Column('text')
