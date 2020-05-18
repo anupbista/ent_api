@@ -45,7 +45,7 @@ import {
       })
     username: string;
 
-    @Column({ type: 'text', select: false })
+    @Column({ type: 'text', select: false, default: 'test', nullable: true })
     password: string;
 
     @BeforeInsert()
