@@ -36,7 +36,7 @@ import {
     @Column({
       type: 'text',
       nullable: true,
-    }))
+    })
     imagepath: string;
 
     @Column('text')
