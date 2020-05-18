@@ -36,11 +36,11 @@ export class AuthService {
 				}
 				const payload = { username: userData.username, sub: userData.id };
 				const accessToken = this.jwtService.sign(payload, {
-					expiresIn: '10m'
+					expiresIn: '60m'
 				});
 
 				return {
-					expires_in: 600,
+					expires_in: 3600,
 					access_token: accessToken,
 					userid: payload.sub
 				};
