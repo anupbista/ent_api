@@ -20,7 +20,10 @@ import { GenreEntity } from '../genre/genre.entity';
     @Column('text')
     name: string;
   
-    @Column('text')
+    @Column({
+      type: 'text',
+      nullable: true,
+    })
     imagepath: string;
 
     @Column('text')

@@ -1,70 +1,71 @@
 import {
-    Entity, PrimaryGeneratedColumn, DeleteDateColumn, CreateDateColumn, Column, UpdateDateColumn, ManyToMany, JoinTable
-  } from 'typeorm';
+	Entity,
+	PrimaryGeneratedColumn,
+	DeleteDateColumn,
+	CreateDateColumn,
+	Column,
+	UpdateDateColumn,
+	ManyToMany,
+	JoinTable
+} from 'typeorm';
 
-  @Entity('book')
-  export class BookEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-  
-    @CreateDateColumn()
-    datecreated: Date;
+@Entity('book')
+export class BookEntity {
+	@PrimaryGeneratedColumn('uuid') id: string;
 
-    @UpdateDateColumn()
-    dateupdated: Date;
-    
-    @DeleteDateColumn()
-    datedeleted: Date;
-    
-    @Column('text')
-    name: string;
-  
-    @Column('text')
-    imagepath: string;
+	@CreateDateColumn() datecreated: Date;
 
-    @Column('text')
-    description: string;
+	@UpdateDateColumn() dateupdated: Date;
 
-    @Column('text')
-    releasedate: string;
+	@DeleteDateColumn() datedeleted: Date;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    downloadlink: string;
+	@Column('text') name: string;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    downloadtext: string;
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	imagepath: string;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    readlink: string;
+	@Column('text') description: string;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    readtext: string;
+	@Column('text') releasedate: string;
 
-    @Column('text')
-    author: string;
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	downloadlink: string;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    publisher: string;
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	downloadtext: string;
 
-    @Column({
-        type: 'text',
-        nullable: true
-    })
-    rating: string;
-    
-  }
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	readlink: string;
+
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	readtext: string;
+
+	@Column('text') author: string;
+
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	publisher: string;
+
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	rating: string;
+}
