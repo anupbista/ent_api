@@ -39,11 +39,12 @@ export class MovieService {
     }
 
     async deleteMovie(id: string){
-        let movie = await this.movieRepository.findOne({where: {id}});
-        if(!movie){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-        }
-        await this.movieRepository.delete({id});
+        let ids = id.split(',');
+        // let movie = await this.movieRepository.findOne({where: {id}});
+        // if(!movie){
+        //     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        // }
+        await this.movieRepository.delete(ids);
         return { deleted: true };
     }
 

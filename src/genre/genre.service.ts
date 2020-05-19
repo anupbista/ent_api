@@ -39,11 +39,12 @@ export class GenreService {
     }
 
     async deleteGenre(id: string){
-        let genre = await this.genreRepository.findOne({where: {id}});
-        if(!genre){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-        }
-        await this.genreRepository.delete({id});
+        let ids = id.split(',');
+        // let genre = await this.genreRepository.findOne({where: {id}});
+        // if(!genre){
+        //     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        // }
+        await this.genreRepository.delete(ids);
         return { deleted: true };
     }
 

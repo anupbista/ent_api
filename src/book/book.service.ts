@@ -39,11 +39,12 @@ export class BookService {
     }
 
     async deleteBook(id: string){
-        let book = await this.bookRepository.findOne({where: {id}});
-        if(!book){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-        }
-        await this.bookRepository.delete({id});
+        let ids = id.split(',');
+        // let book = await this.bookRepository.findOne({where: {id}});
+        // if(!book){
+        //     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+        // }
+        await this.bookRepository.delete(ids);
         return { deleted: true };
     }
 
