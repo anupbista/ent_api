@@ -53,11 +53,12 @@ export class UserService {
     }
 
     async deleteUser(id: string){
+        let ids = id.split(',');
         // let user = await this.userRepository.findOne({where: {id}});
         // if(!user){
         //     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
         // }
-        await this.userRepository.delete([id]);
+        await this.userRepository.delete([ids]);
         return { deleted: true };
     }
 
