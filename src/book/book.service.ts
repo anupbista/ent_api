@@ -11,8 +11,10 @@ export class BookService {
 
     }
 
-    async getAllBooks(){
-        return await this.bookRepository.find();
+    async getAllBooks(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.bookRepository.find({ take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveBook(data: BookDTO){
@@ -24,7 +26,7 @@ export class BookService {
     async getBook(id: string){
         let book = await this.bookRepository.findOne({where: {id}});
         if(!book){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         return book;
     }
@@ -32,7 +34,7 @@ export class BookService {
     async updateBook(id: string, data: Partial<BookDTO>){
         let book = await this.bookRepository.findOne({where: {id}});
         if(!book){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         await this.bookRepository.update({id}, data);
         return this.bookRepository.findOne({where: {id}})

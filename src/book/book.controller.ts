@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseInterceptors, UploadedFile, UsePipes, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseInterceptors, UploadedFile, UsePipes, UseGuards, Query } from '@nestjs/common';
 import { BookService } from './book.service';
 import { BookDTO } from './book.dto';
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -14,8 +14,8 @@ export class BookController {
     constructor(private bookService: BookService){}
 
     @Get()
-    getAllBooks(){
-        return this.bookService.getAllBooks();
+    getAllBooks(@Query('page') page: number, @Query('limit') limit: number){
+        return this.bookService.getAllBooks(page, limit);
     }
 
     @Post(':id/image')

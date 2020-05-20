@@ -39,10 +39,7 @@ export class TokenGuard implements CanActivate {
 			// check token from postgres
 			let userInfo = await this.userInfoService.getUserInfo(decodedtoken.sub);
 			if (userInfo) {
-				console.log('Data present', userInfo.token);
-				console.log('Token present', token);
 				if (userInfo.token == token) {
-					console.log('Not allowed');
 					return resolve(false);
 				} else {
 					return resolve(true);

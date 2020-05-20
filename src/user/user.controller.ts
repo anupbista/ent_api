@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Patch, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Patch, Delete, UseInterceptors, UploadedFile, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDTO } from './user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -14,19 +14,19 @@ export class UserController {
 
     @Get()
     @UseGuards(TokenGuard, JwtAuthGuard)
-    getAllUser(){
-        return this.userService.getAllUsers();
+    getAllUser(@Query('page') page: number, @Query('limit') limit: number){
+        return this.userService.getAllUsers(page, limit);
     }
 
     @Post()
-    // @UseGuards(TokenGuard, JwtAuthGuard)
+    @UseGuards(TokenGuard, JwtAuthGuard)
     @UsePipes(new ValidationPipe())
     createUser(@Body() data: UserDTO){
         return this.userService.saveUser(data)
     }
 
     @Post(':id/image')
-    // @UseGuards(TokenGuard, JwtAuthGuard)
+    @UseGuards(TokenGuard, JwtAuthGuard)
     @UseInterceptors(
         FileInterceptor('image', {
           storage: diskStorage({

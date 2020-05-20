@@ -11,8 +11,10 @@ export class MovieService {
 
     }
 
-    async getAllMovies(){
-        return await this.movieRepository.find({ relations: ["genre"] });
+    async getAllMovies(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.movieRepository.find({ relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveMovie(data: MovieDTO){
@@ -24,7 +26,7 @@ export class MovieService {
     async getMovie(id: string){
         let movie = await this.movieRepository.findOne({where: {id}, relations: ["genre"]});
         if(!movie){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         return movie;
     }
@@ -32,7 +34,7 @@ export class MovieService {
     async updateMovie(id: string, data: Partial<MovieDTO>){
         let movie = await this.movieRepository.findOne({where: {id}});
         if(!movie){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         await this.movieRepository.save({...data, id: id})
         return this.movieRepository.findOne({where: {id}, relations: ["genre"]})

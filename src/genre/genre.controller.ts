@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Patch, Delete, UseGuards, Query } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import { GenreDTO } from './genre.dto';
 import { TokenGuard } from '../auth/token.guard';
@@ -11,8 +11,8 @@ export class GenreController {
 
     @Get()
     @UseGuards(TokenGuard, JwtAuthGuard)
-    getAllGenre(){
-        return this.genreService.getAllGenres();
+    getAllGenre(@Query('page') page: number, @Query('limit') limit: number){
+        return this.genreService.getAllGenres(page, limit);
     }
 
     @Post()

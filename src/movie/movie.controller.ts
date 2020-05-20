@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseInterceptors, UploadedFile, UsePipes, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseInterceptors, UploadedFile, UsePipes, UseGuards, Query } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieDTO } from './movie.dto';
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -14,8 +14,8 @@ export class MovieController {
     constructor(private movieService: MovieService){}
 
     @Get()
-    getAllMovies(){
-        return this.movieService.getAllMovies();
+    getAllMovies(@Query('page') page: number, @Query('limit') limit: number){
+        return this.movieService.getAllMovies(page, limit);
     }
 
     @Post(':id/image')

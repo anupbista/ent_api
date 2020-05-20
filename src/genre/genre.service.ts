@@ -11,8 +11,10 @@ export class GenreService {
 
     }
 
-    async getAllGenres(){
-        return await this.genreRepository.find();
+    async getAllGenres(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.genreRepository.find({ take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveGenre(data: GenreDTO){
@@ -24,7 +26,7 @@ export class GenreService {
     async getGenre(id: string){
         let genre = await this.genreRepository.findOne({where: {id}});
         if(!genre){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         return genre;
     }
@@ -32,7 +34,7 @@ export class GenreService {
     async updateGenre(id: string, data: Partial<GenreDTO>){
         let genre = await this.genreRepository.findOne({where: {id}});
         if(!genre){
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
         await this.genreRepository.update({id}, data);
         return this.genreRepository.findOne({where: {id}})

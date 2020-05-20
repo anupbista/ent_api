@@ -30,7 +30,6 @@ export class AuthService {
 					let d = new Date();
 					let now_sec = (d.getTime() - d.getMilliseconds()) / 1000;
 					if(now_sec > exp_date){
-						// console.log("Token expired");
 						await this.userInfoService.deleteUserInfo(userData.id);
 					}
 				}
