@@ -14,7 +14,6 @@ export class MovieController {
     constructor(private movieService: MovieService){}
 
     @Get()
-    @UseGuards(TokenGuard, JwtAuthGuard)
     getAllMovies(){
         return this.movieService.getAllMovies();
     }

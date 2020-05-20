@@ -14,7 +14,6 @@ export class BookController {
     constructor(private bookService: BookService){}
 
     @Get()
-    @UseGuards(TokenGuard, JwtAuthGuard)
     getAllBooks(){
         return this.bookService.getAllBooks();
     }
