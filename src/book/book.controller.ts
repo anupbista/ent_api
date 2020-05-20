@@ -41,7 +41,6 @@ export class BookController {
     }
 
     @Get(':id')
-    @UseGuards(TokenGuard, JwtAuthGuard)
     getBook(@Param('id') id: string){
         return this.bookService.getBook(id);
     }

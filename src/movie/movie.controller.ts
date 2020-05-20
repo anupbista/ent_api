@@ -41,7 +41,6 @@ export class MovieController {
     }
 
     @Get(':id')
-    @UseGuards(TokenGuard, JwtAuthGuard)
     getMovie(@Param('id') id: string){
         return this.movieService.getMovie(id);
     }
