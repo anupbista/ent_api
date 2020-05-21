@@ -45,6 +45,14 @@ export class UserService {
         return user;
     }
 
+    async getUserPassById(id: string){
+        let user = await this.userRepository.findOne({where: {id}, select: ['id', 'username', 'password'] });
+        if(!user){
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+        return user;
+    }
+
     async getUserByUsername(username: string): Promise<UserDTO> {
         return await this.userRepository.findOne({
             where: {

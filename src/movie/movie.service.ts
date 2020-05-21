@@ -57,7 +57,7 @@ export class MovieService {
         if(!movie){
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
         }
-        await this.movieRepository.save({...data, id: id})
+        await this.movieRepository.update({id}, data)
         return this.movieRepository.findOne({where: {id}, relations: ["genre"]})
     }
 

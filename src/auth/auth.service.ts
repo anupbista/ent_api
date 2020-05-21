@@ -7,6 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt_decode from 'jwt-decode';
 import { UserInfoService } from '../userinfo/userinfo.service';
 import { AuthDTO } from './auth.dto';
+import { PasswordChangeDTO } from './passwordchange.dto';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +48,18 @@ export class AuthService {
 				};
 			}
 		});
+	}
+
+	public async passwordChange(passwords: PasswordChangeDTO, id: string): Promise<any> {
+		let user = await this.userService.getUserPassById(id);
+		if (!await this.comparePassword(passwords.oldpassword, user.password)) {
+			throw new UnauthorizedException();
+		}else{
+			let newpass = await bcrypt.hash(passwords.newpassword || 'test', 10);
+			return this.userService.updateUser(id, {
+				password: newpass
+			})
+		}
 	}
 
 	async logout(id: string, token) {

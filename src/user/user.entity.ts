@@ -1,5 +1,5 @@
 import {
-    Entity, PrimaryGeneratedColumn, DeleteDateColumn, CreateDateColumn, Column, UpdateDateColumn, BeforeInsert
+    Entity, PrimaryGeneratedColumn, DeleteDateColumn, CreateDateColumn, Column, UpdateDateColumn, BeforeInsert, BeforeUpdate
   } from 'typeorm';
   import * as bcrypt from 'bcryptjs';
 
