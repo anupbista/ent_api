@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { GenreEntity } from './genre.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Raw } from 'typeorm';
 import { GenreDTO } from './genre.dto';
 
 @Injectable()
@@ -11,10 +11,14 @@ export class GenreService {
 
     }
 
-    async getAllGenres(page: number, limit: number){
+    async getAllGenres(page: number, limit: number, search: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.genreRepository.find({ take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return await this.genreRepository.find({ where: [
+            { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
+        ], order: {
+            datecreated: "DESC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveGenre(data: GenreDTO){

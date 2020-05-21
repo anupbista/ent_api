@@ -64,8 +64,8 @@ export class BookEntity {
 	publisher: string;
 
 	@Column({
-		type: 'text',
+		type: 'decimal',
 		nullable: true
 	})
-	rating: string;
+	rating: number;
 }

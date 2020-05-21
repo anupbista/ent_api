@@ -1,58 +1,58 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { GenreEntity } from '../genre/genre.entity';
-import { IsNotEmpty, IsString, IsOptional, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, ValidateNested, IsDecimal, IsNumber } from 'class-validator';
 
 export class MovieDTO{
     
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Name' })
     @IsNotEmpty()
     @IsString()
     name: string; 
 
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Image path', required: false })
     @IsString()
     @IsOptional()
     imagepath: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Description' })
     @IsNotEmpty()
     @IsString()
     description: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Release date' })
     @IsNotEmpty()
     @IsString()
     releasedate: string;
     
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Download link' })
     @IsNotEmpty()
     @IsString()
     downloadlink: string;
     
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Download text' })
     @IsNotEmpty()
     downloadtext: string;
     
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Watch link' })
     @IsNotEmpty()
     @IsString()
     watchlink: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Watch link' })
     @IsNotEmpty()
     @IsString()
     watchtext: string;
 
-    @ApiProperty()
+    @ApiProperty({ type: Number, description: 'Rating' })
     @IsNotEmpty()
-    @IsString()
-    rating: string;
+    @IsNumber()
+    rating: number;
 
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Country' })
     @IsNotEmpty()
     country: string;
     
-    @ApiProperty()
+    @ApiProperty({ type: String, description: 'Genre' })
     @IsNotEmpty()
     @ValidateNested()
     genre: GenreEntity[];

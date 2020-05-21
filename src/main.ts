@@ -29,6 +29,9 @@ async function bootstrap() {
 		.setTitle('Ent API')
 		.setDescription('API for Ent')
 		.setVersion('1.0')
+		.addBearerAuth({
+			type: 'http', scheme: 'bearer', bearerFormat: 'JWT'}, 'Authorization'
+		)
 		.build();
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('api', app, document);

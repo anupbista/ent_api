@@ -1,57 +1,52 @@
 import {
-    Entity, PrimaryGeneratedColumn, DeleteDateColumn, CreateDateColumn, Column, UpdateDateColumn, ManyToMany, JoinTable
-  } from 'typeorm';
+	Entity,
+	PrimaryGeneratedColumn,
+	DeleteDateColumn,
+	CreateDateColumn,
+	Column,
+	UpdateDateColumn,
+	ManyToMany,
+	JoinTable
+} from 'typeorm';
 import { GenreEntity } from '../genre/genre.entity';
 
-  @Entity('movie')
-  export class MovieEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-  
-    @CreateDateColumn()
-    datecreated: Date;
+@Entity('movie')
+export class MovieEntity {
+	@PrimaryGeneratedColumn('uuid') id: string;
 
-    @UpdateDateColumn()
-    dateupdated: Date;
-    
-    @DeleteDateColumn()
-    datedeleted: Date;
-    
-    @Column('text')
-    name: string;
-  
-    @Column({
-      type: 'text',
-      nullable: true,
-    })
-    imagepath: string;
+	@CreateDateColumn() datecreated: Date;
 
-    @Column('text')
-    description: string;
+	@UpdateDateColumn() dateupdated: Date;
 
-    @Column('text')
-    releasedate: string;
+	@DeleteDateColumn() datedeleted: Date;
 
-    @Column('text')
-    downloadlink: string;
+	@Column('text') name: string;
 
-    @Column('text')
-    downloadtext: string;
+	@Column({
+		type: 'text',
+		nullable: true
+	})
+	imagepath: string;
 
-    @Column('text')
-    watchlink: string;
+	@Column('text') description: string;
 
-    @Column('text')
-    watchtext: string;
+	@Column('text') releasedate: string;
 
-    @Column('text')
-    rating: string;
+	@Column('text') downloadlink: string;
 
-    @Column('text')
-    country: string;
+	@Column('text') downloadtext: string;
 
-    @ManyToMany( type => GenreEntity)
-    @JoinTable()
-    genre: GenreEntity[];
-    
-  }
+	@Column('text') watchlink: string;
+
+	@Column('text') watchtext: string;
+
+	@Column('decimal') rating: number;
+
+	@Column('text') country: string;
+
+	@ManyToMany((type) => GenreEntity, (genre) => genre.name, {
+		cascade: true
+	})
+	@JoinTable()
+	genre: GenreEntity[];
+}

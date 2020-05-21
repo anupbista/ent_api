@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Raw } from 'typeorm';
 import { BookEntity } from './book.entity';
 import { BookDTO } from './book.dto';
 
@@ -11,10 +11,31 @@ export class BookService {
 
     }
 
-    async getAllBooks(page: number, limit: number){
+    async getAllBooks(page: number, limit: number, search: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return await this.bookRepository.find({ where: [
+            { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
+        ], order: {
+            datecreated: "DESC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getLastestBooks(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.bookRepository.find({ order: {
+            releasedate: "DESC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getPopularBooks(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.bookRepository.find({ order: {
+            rating: "DESC",
+            releasedate: "DESC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveBook(data: BookDTO){

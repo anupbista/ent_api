@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 // import { redisClient } from '../shared/redis.db';
 import * as jwt_decode from 'jwt-decode';
 import { UserInfoService } from '../userinfo/userinfo.service';
+import { AuthDTO } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,11 @@ export class AuthService {
 		return await this.userService.getUserPass(userData.username);
 	}
 
-	public async login(user: any): Promise<any> {
+	
+	public async login(user: AuthDTO): Promise<any> {
 		return this.validate(user).then(async (userData: any) => {
 			if (!userData) {
-				throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+				throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
 			} else if (!await this.comparePassword(user.password, userData.password)) {
 				throw new UnauthorizedException();
 			} else {

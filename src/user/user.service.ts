@@ -2,17 +2,21 @@ import { Injectable, HttpException, HttpStatus, ConflictException } from '@nestj
 import { UserEntity } from './user.entity';
 import { UserDTO } from './user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Raw } from 'typeorm';
 
 @Injectable()
 export class UserService {
 
     constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>){}
 
-    async getAllUsers(page: number, limit: number){
+    async getAllUsers(page: number, limit: number, search: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.userRepository.find({ take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return await this.userRepository.find({ where: [
+            { username: Raw(alias => `${alias} ILIKE '%${search}%'`)}, {firstname: Raw(alias => `${alias} ILIKE '%${search}%'`)}, {lastname: Raw(alias => `${alias} ILIKE '%${search}%'`) }
+        ], order: {
+            username: "ASC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveUser(data: UserDTO){
@@ -22,7 +26,7 @@ export class UserService {
         }
         const user = await this.userRepository.create(data);
         await this.userRepository.save(user);
-        return user;
+        return {id: user.id };
     }
 
     async getUser(id: string){

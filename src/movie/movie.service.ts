@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MovieEntity } from './movie.entity';
-import { Repository } from 'typeorm';
+import { Repository, Like, Raw } from 'typeorm';
 import { MovieDTO } from './movie.dto';
 
 @Injectable()
@@ -11,10 +11,31 @@ export class MovieService {
 
     }
 
-    async getAllMovies(page: number, limit: number){
+    async getAllMovies(page: number, limit: number, search: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({ relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return await this.movieRepository.find({  where: [
+            { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
+        ], order: {
+            datecreated: "DESC"
+        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getLastestMovies(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.movieRepository.find({ order: {
+            releasedate: "DESC"
+        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getPopularMovies(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.movieRepository.find({ order: {
+            rating: "DESC",
+            releasedate: "DESC"
+        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async saveMovie(data: MovieDTO){
