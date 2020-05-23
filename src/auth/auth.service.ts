@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserDTO } from '../user/user.dto';
@@ -53,7 +53,7 @@ export class AuthService {
 	public async passwordChange(passwords: PasswordChangeDTO, id: string): Promise<any> {
 		let user = await this.userService.getUserPassById(id);
 		if (!await this.comparePassword(passwords.oldpassword, user.password)) {
-			throw new UnauthorizedException();
+			throw new ForbiddenException();
 		}else{
 			let newpass = await bcrypt.hash(passwords.newpassword || 'test', 10);
 			return this.userService.updateUser(id, {
