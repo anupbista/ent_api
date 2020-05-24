@@ -37,6 +37,17 @@ export class UserService {
         return user;
     }
 
+    async getUserDashboard(){
+        const { count } = await this.userRepository.createQueryBuilder('user').select('COUNT(*)', 'count').getRawOne()
+        const users =  await this.userRepository.find({ order: {
+            datecreated: "DESC"
+        }, take: 5, skip: 0 });
+        return {
+            users: users,
+            count: count
+        }
+    }
+
     async getUserPass(username: string){
         let user = await this.userRepository.findOne({where: {username}, select: ['id', 'username', 'password'] });
         if(!user){

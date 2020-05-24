@@ -91,6 +91,16 @@ export class MovieController {
 		return this.movieService.getPopularMovies(page, limit);
 	}
 
+	@Get('/dashboard')
+    @UseGuards(TokenGuard, JwtAuthGuard)
+    @ApiTags('Movies')
+    @ApiOkResponse({ description: 'Success' })
+    @ApiBearerAuth('Authorization')
+    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+    getMovieDashboard(){
+        return this.movieService.getMovieDashboard();
+    }
+
 	@Post(':id/image')
 	@UseGuards(TokenGuard, JwtAuthGuard)
 	@ApiTags('Movies')

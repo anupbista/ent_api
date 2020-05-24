@@ -54,6 +54,16 @@ export class GenreController {
 		return this.genreService.getAllGenres(page, limit, search);
 	}
 
+	@Get('/dashboard')
+    @UseGuards(TokenGuard, JwtAuthGuard)
+    @ApiTags('Genre')
+    @ApiOkResponse({ description: 'Success' })
+    @ApiBearerAuth('Authorization')
+    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+    getGenreDashboard(){
+        return this.genreService.getGenreDashboard();
+    }
+
 	@Post()
 	@UseGuards(TokenGuard, JwtAuthGuard)
 	@UsePipes(new ValidationPipe())

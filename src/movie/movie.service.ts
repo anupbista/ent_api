@@ -52,6 +52,18 @@ export class MovieService {
         return movie;
     }
 
+    async getMovieDashboard(){
+        const { count } = await this.movieRepository.createQueryBuilder('movie').select('COUNT(*)', 'count').getRawOne()
+        const movies =  await this.movieRepository.find({ order: {
+            datecreated: "DESC"
+        }, take: 5, skip: 0 });
+        return {
+            movies: movies,
+            count: count
+        }
+       
+    }
+
     async updateMovie(id: string, data: Partial<MovieDTO>){
         let movie = await this.movieRepository.findOne({where: {id}});
         if(!movie){

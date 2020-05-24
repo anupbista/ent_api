@@ -90,6 +90,16 @@ export class BookController {
 		return this.bookService.getPopularBooks(page, limit);
 	}
 
+	@Get('/dashboard')
+    @UseGuards(TokenGuard, JwtAuthGuard)
+    @ApiTags('Book')
+    @ApiOkResponse({ description: 'Success' })
+    @ApiBearerAuth('Authorization')
+    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+    getBookDashboard(){
+        return this.bookService.getBookDashboard();
+    }
+
 	@Post(':id/image')
 	@ApiTags('Books')
 	@ApiOkResponse({ description: 'Success' })

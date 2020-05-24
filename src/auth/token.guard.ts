@@ -6,7 +6,7 @@ import { UserInfoService } from '../userinfo/userinfo.service';
 
 @Injectable()
 export class TokenGuard implements CanActivate {
-	constructor(@Inject('UserInfoService')  private userInfoService: UserInfoService) {}
+	constructor(@Inject('UserInfoService') private userInfoService: UserInfoService) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
@@ -37,7 +37,7 @@ export class TokenGuard implements CanActivate {
 			// });
 
 			// check token from postgres
-			let userInfo = await this.userInfoService.getUserInfo(decodedtoken.sub);
+			let userInfo: any = await this.userInfoService.getUserInfo(decodedtoken.sub, token);
 			if (userInfo) {
 				if (userInfo.token == token) {
 					return resolve(false);
@@ -45,9 +45,8 @@ export class TokenGuard implements CanActivate {
 					return resolve(true);
 				}
 			} else {
-        return resolve(true);
+				return resolve(true);
 			}
-
 		});
 	}
 }

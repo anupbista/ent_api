@@ -9,12 +9,14 @@ export class UserInfoService {
 
     constructor(@InjectRepository(UserInfoEntity) private userInfoRepository: Repository<UserInfoEntity>){}
 
-    async getUserInfo(userid: string){
-        let userInfo = await this.userInfoRepository.findOne({where: {userid} });
-        if(!userInfo){
-            return null
+    async getUserInfo(userid: string, token: string){
+        if(token){
+            let userInfo = await this.userInfoRepository.findOne({where: {userid: userid, token: token} });
+            return userInfo || null;
+        }else{
+            let userInfo = await this.userInfoRepository.find({where: {userid: userid} });
+            return userInfo || null;
         }
-        return userInfo;
     }
 
     async saveUserInfo(data: UserInfoDTO){
@@ -23,8 +25,8 @@ export class UserInfoService {
         return userInfo;
     }
 
-    async deleteUserInfo(userid: string){
-        await this.userInfoRepository.delete({userid});
+    async deleteUserInfo(ids: string[]){
+        await this.userInfoRepository.delete(ids);
         return { deleted: true };
     }
 

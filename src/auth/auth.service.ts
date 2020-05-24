@@ -8,16 +8,20 @@ import * as jwt_decode from 'jwt-decode';
 import { UserInfoService } from '../userinfo/userinfo.service';
 import { AuthDTO } from './auth.dto';
 import { PasswordChangeDTO } from './passwordchange.dto';
+import { UserInfoDTO } from '../userinfo/userinfo.dto';
 
 @Injectable()
 export class AuthService {
-	constructor(private readonly userService: UserService, private readonly jwtService: JwtService, private userInfoService: UserInfoService) {}
+	constructor(
+		private readonly userService: UserService,
+		private readonly jwtService: JwtService,
+		private userInfoService: UserInfoService
+	) {}
 
 	private async validate(userData: any): Promise<UserDTO> {
 		return await this.userService.getUserPass(userData.username);
 	}
 
-	
 	public async login(user: AuthDTO): Promise<any> {
 		return this.validate(user).then(async (userData: any) => {
 			if (!userData) {
@@ -26,15 +30,19 @@ export class AuthService {
 				throw new UnauthorizedException();
 			} else {
 				// delete the expired token associated with this user
-				let userInfo = await this.userInfoService.getUserInfo(userData.id);
-				if(userInfo){
-					let decodedtoken = jwt_decode(userInfo.token);
-					let exp_date = decodedtoken.exp;
-					let d = new Date();
-					let now_sec = (d.getTime() - d.getMilliseconds()) / 1000;
-					if(now_sec > exp_date){
-						await this.userInfoService.deleteUserInfo(userData.id);
-					}
+				let expiredToken = [];
+				let userInfos: any = await this.userInfoService.getUserInfo(userData.id, null);
+				if (userInfos) {
+					userInfos.forEach((element) => {
+						let decodedtoken = jwt_decode(element.token);
+						let exp_date = decodedtoken.exp;
+						let d = new Date();
+						let now_sec = (d.getTime() - d.getMilliseconds()) / 1000;
+						if (now_sec > exp_date) {
+							expiredToken.push(element.id);
+						}
+					});
+					if(expiredToken.length > 0) await this.userInfoService.deleteUserInfo(expiredToken);
 				}
 				const payload = { username: userData.username, sub: userData.id };
 				const accessToken = this.jwtService.sign(payload, {
@@ -54,11 +62,11 @@ export class AuthService {
 		let user = await this.userService.getUserPassById(id);
 		if (!await this.comparePassword(passwords.oldpassword, user.password)) {
 			throw new ForbiddenException();
-		}else{
+		} else {
 			let newpass = await bcrypt.hash(passwords.newpassword || 'test', 10);
 			return this.userService.updateUser(id, {
 				password: newpass
-			})
+			});
 		}
 	}
 
@@ -80,7 +88,7 @@ export class AuthService {
 			await this.userInfoService.saveUserInfo({
 				userid: id,
 				token: token
-			})
+			});
 			return { logout: true };
 		}
 	}

@@ -38,6 +38,16 @@ export class UserController {
         return this.userService.getAllUsers(page, limit, search);
     }
 
+    @Get('/dashboard')
+    @UseGuards(TokenGuard, JwtAuthGuard)
+    @ApiTags('Users')
+    @ApiOkResponse({ description: 'Success' })
+    @ApiBearerAuth('Authorization')
+    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+    getUserDashboard(){
+        return this.userService.getUserDashboard();
+    }
+
     @Post()
     @UseGuards(TokenGuard, JwtAuthGuard)
     @UsePipes(new ValidationPipe())

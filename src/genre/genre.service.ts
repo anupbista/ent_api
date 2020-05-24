@@ -35,6 +35,17 @@ export class GenreService {
         return genre;
     }
 
+    async getGenreDashboard(){
+        const { count } = await this.genreRepository.createQueryBuilder('genre').select('COUNT(*)', 'count').getRawOne()
+        const genres =  await this.genreRepository.find({ order: {
+            datecreated: "DESC"
+        }, take: 5, skip: 0 });
+        return {
+            genres: genres,
+            count: count
+        }
+    }
+
     async updateGenre(id: string, data: Partial<GenreDTO>){
         let genre = await this.genreRepository.findOne({where: {id}});
         if(!genre){

@@ -52,6 +52,17 @@ export class BookService {
         return book;
     }
 
+    async getBookDashboard(){
+        const { count } = await this.bookRepository.createQueryBuilder('book').select('COUNT(*)', 'count').getRawOne()
+        const books =  await this.bookRepository.find({ order: {
+            datecreated: "DESC"
+        }, take: 5, skip: 0 });
+        return {
+            books: books,
+            count: count
+        }
+    }
+
     async updateBook(id: string, data: Partial<BookDTO>){
         let book = await this.bookRepository.findOne({where: {id}});
         if(!book){
