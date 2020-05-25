@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MovieEntity } from './movie.entity';
-import { Repository, Like, Raw } from 'typeorm';
+import { Repository, Like, Raw, MoreThan } from 'typeorm';
 import { MovieDTO } from './movie.dto';
 
 @Injectable()
@@ -11,14 +11,23 @@ export class MovieService {
 
     }
 
-    async getAllMovies(page: number, limit: number, search: string = ''){
+    async getAllMovies(page: number, limit: number, search: string = '', genre: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({  where: [
-            { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
-        ], order: {
-            datecreated: "DESC"
-        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        // return await this.movieRepository.find({  where: [
+        //     { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
+        // ], order: {
+        //     datecreated: "DESC"
+        // }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+
+        return await this.movieRepository.createQueryBuilder("MovieEntity")
+        .leftJoinAndSelect("MovieEntity.genre", "GenreEntity")
+        .where(search != '' ? "MovieEntity.name ILIKE :name" : '1=1', { name: '%' + search + '%' })
+        .andWhere( genre != '' ? "GenreEntity.id = :gid" : '1=1', { gid: genre })
+        .orderBy("MovieEntity.datecreated", "DESC")
+        .limit(pageLimit)
+        .offset(pageLimit * (currentPage - 1))
+        .getMany();
     }
 
     async getLastestMovies(page: number, limit: number){
@@ -35,6 +44,22 @@ export class MovieService {
         return await this.movieRepository.find({ order: {
             rating: "DESC",
             releasedate: "DESC"
+        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getUpcomingMovies(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.movieRepository.find({ where: [{
+            releasedate: MoreThan(new Date())
+        }], relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getTopRatedMovies(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.movieRepository.find({ order: {
+            rating: "DESC",
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 

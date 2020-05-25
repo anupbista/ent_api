@@ -38,6 +38,14 @@ export class BookService {
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
+    async getTopRatedBooks(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.bookRepository.find({ order: {
+            rating: "DESC"
+        }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
     async saveBook(data: BookDTO){
         const book = await this.bookRepository.create(data);
         await this.bookRepository.save(book);

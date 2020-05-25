@@ -53,8 +53,13 @@ export class MovieController {
 		required: false,
 		type: String
 	})
-	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
-		return this.movieService.getAllMovies(page, limit, search);
+	@ApiQuery({
+		name: 'genre',
+		required: false,
+		type: String
+	})
+	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string,  @Query('genre') genre: string) {
+		return this.movieService.getAllMovies(page, limit, search, genre);
 	}
 
 	@Get('/latest')
@@ -89,6 +94,40 @@ export class MovieController {
 	})
 	getPopularMovies(@Query('page') page: number, @Query('limit') limit: number) {
 		return this.movieService.getPopularMovies(page, limit);
+	}
+
+	@Get('/upcoming')
+	@ApiTags('Movies')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	getUpcomingMovies(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.movieService.getUpcomingMovies(page, limit);
+	}
+
+	@Get('/toprated')
+	@ApiTags('Movies')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	getTopRatedMovies(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.movieService.getTopRatedMovies(page, limit);
 	}
 
 	@Get('/dashboard')

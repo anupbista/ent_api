@@ -90,6 +90,23 @@ export class BookController {
 		return this.bookService.getPopularBooks(page, limit);
 	}
 
+	@Get('/toprated')
+	@ApiTags('Books')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	getTopRatedBooks(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.bookService.getTopRatedBooks(page, limit);
+	}
+
 	@Get('/dashboard')
     @UseGuards(TokenGuard, JwtAuthGuard)
     @ApiTags('Book')
