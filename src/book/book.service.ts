@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Raw } from 'typeorm';
+import { Repository, Raw, MoreThan } from 'typeorm';
 import { BookEntity } from './book.entity';
 import { BookDTO } from './book.dto';
 
@@ -36,6 +36,14 @@ export class BookService {
             rating: "DESC",
             releasedate: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+    }
+
+    async getUpComingBooks(page: number, limit: number){
+        const pageLimit = limit || 20
+        const currentPage = page || 1
+        return await this.bookRepository.find({ where: [{
+            releasedate: MoreThan(new Date())
+        }], take: pageLimit, skip: pageLimit * (currentPage - 1) });
     }
 
     async getTopRatedBooks(page: number, limit: number){

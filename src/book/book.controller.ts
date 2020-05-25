@@ -90,6 +90,23 @@ export class BookController {
 		return this.bookService.getPopularBooks(page, limit);
 	}
 
+	@Get('/upcoming')
+	@ApiTags('Books')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	getUpComingBooks(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.bookService.getUpComingBooks(page, limit);
+	}
+
 	@Get('/toprated')
 	@ApiTags('Books')
 	@ApiOkResponse({ description: 'Success' })
