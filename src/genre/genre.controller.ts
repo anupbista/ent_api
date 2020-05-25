@@ -30,11 +30,11 @@ export class GenreController {
 	constructor(private genreService: GenreService) {}
 
 	@Get()
-	@UseGuards(TokenGuard, JwtAuthGuard)
+	// @UseGuards(TokenGuard, JwtAuthGuard)
 	@ApiTags('Genre')
 	@ApiOkResponse({ description: 'Success' })
-	@ApiBearerAuth('Authorization')
-	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+	// @ApiBearerAuth('Authorization')
+	// @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
 	@ApiQuery({
 		name: 'limit',
 		required: false,
