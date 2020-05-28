@@ -28,7 +28,7 @@ export class BookService {
     async getLastestBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] = await this.bookRepository.find({ order: {
+        const [result, total] = await this.bookRepository.findAndCount({ order: {
             releasedate: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
         return {
@@ -40,7 +40,7 @@ export class BookService {
     async getPopularBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] = await this.bookRepository.find({ order: {
+        const [result, total] = await this.bookRepository.findAndCount({ order: {
             rating: "DESC",
             releasedate: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
@@ -53,7 +53,7 @@ export class BookService {
     async getUpComingBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] = await this.bookRepository.find({ where: [{
+        const [result, total] = await this.bookRepository.findAndCount({ where: [{
             releasedate: MoreThan(new Date())
         }], take: pageLimit, skip: pageLimit * (currentPage - 1) });
         return {
@@ -65,7 +65,7 @@ export class BookService {
     async getTopRatedBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] =  await this.bookRepository.find({ order: {
+        const [result, total] =  await this.bookRepository.findAndCount({ order: {
             rating: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
         return {

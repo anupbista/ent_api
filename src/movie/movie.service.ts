@@ -50,7 +50,7 @@ export class MovieService {
     async getPopularMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] =  await this.movieRepository.find({ order: {
+        const [result, total] =  await this.movieRepository.findAndCount({ order: {
             rating: "DESC",
             releasedate: "DESC"
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
@@ -63,7 +63,7 @@ export class MovieService {
     async getUpcomingMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] =  await this.movieRepository.find({ where: [{
+        const [result, total] =  await this.movieRepository.findAndCount({ where: [{
             releasedate: MoreThan(new Date())
         }], relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
         return {
@@ -75,7 +75,7 @@ export class MovieService {
     async getTopRatedMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        const [result, total] =  await this.movieRepository.find({ order: {
+        const [result, total] =  await this.movieRepository.findAndCount({ order: {
             rating: "DESC",
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
         return {
