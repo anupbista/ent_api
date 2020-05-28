@@ -38,34 +38,50 @@ export class MovieService {
     async getLastestMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({ order: {
+        const [result, total] =  await this.movieRepository.findAndCount({ order: {
             releasedate: "DESC"
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getPopularMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({ order: {
+        const [result, total] =  await this.movieRepository.find({ order: {
             rating: "DESC",
             releasedate: "DESC"
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getUpcomingMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({ where: [{
+        const [result, total] =  await this.movieRepository.find({ where: [{
             releasedate: MoreThan(new Date())
         }], relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getTopRatedMovies(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.movieRepository.find({ order: {
+        const [result, total] =  await this.movieRepository.find({ order: {
             rating: "DESC",
         }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async saveMovie(data: MovieDTO){

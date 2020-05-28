@@ -28,34 +28,50 @@ export class BookService {
     async getLastestBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ order: {
+        const [result, total] = await this.bookRepository.find({ order: {
             releasedate: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getPopularBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ order: {
+        const [result, total] = await this.bookRepository.find({ order: {
             rating: "DESC",
             releasedate: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getUpComingBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ where: [{
+        const [result, total] = await this.bookRepository.find({ where: [{
             releasedate: MoreThan(new Date())
         }], take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getTopRatedBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ order: {
+        const [result, total] =  await this.bookRepository.find({ order: {
             rating: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async saveBook(data: BookDTO){
