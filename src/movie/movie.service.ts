@@ -11,7 +11,7 @@ export class MovieService {
 
     }
 
-    async getAllMovies(page: number, limit: number, search: string = '', genre: string = ''){
+    async getAllMovies(page: number, limit: number, search: string = '', genre: string = '', country :string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
         // return await this.movieRepository.find({  where: [
@@ -23,6 +23,7 @@ export class MovieService {
         return await this.movieRepository.createQueryBuilder("MovieEntity")
         .leftJoinAndSelect("MovieEntity.genre", "GenreEntity")
         .where(search != '' ? "MovieEntity.name ILIKE :name" : '1=1', { name: '%' + search + '%' })
+        .andWhere(country != '' ? "MovieEntity.country ILIKE :country" : '1=1', { country: '%' + country + '%' })
         .andWhere( genre != '' ? "GenreEntity.id = :gid" : '1=1', { gid: genre })
         .orderBy("MovieEntity.datecreated", "DESC")
         .limit(pageLimit)

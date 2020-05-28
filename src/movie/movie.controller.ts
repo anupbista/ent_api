@@ -58,8 +58,13 @@ export class MovieController {
 		required: false,
 		type: String
 	})
-	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string,  @Query('genre') genre: string) {
-		return this.movieService.getAllMovies(page, limit, search, genre);
+	@ApiQuery({
+		name: 'country',
+		required: false,
+		type: String
+	})
+	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string, @Query('genre') genre: string, @Query('country') country: string) {
+		return this.movieService.getAllMovies(page, limit, search, genre, country);
 	}
 
 	@Get('/latest')
