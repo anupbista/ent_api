@@ -14,11 +14,15 @@ export class BookService {
     async getAllBooks(page: number, limit: number, search: string = ''){
         const pageLimit = limit || 20
         const currentPage = page || 1
-        return await this.bookRepository.find({ where: [
+        const [result, total] = await this.bookRepository.findAndCount({ where: [
             { name: Raw(alias => `${alias} ILIKE '%${search}%'`) }
         ], order: {
             datecreated: "DESC"
         }, take: pageLimit, skip: pageLimit * (currentPage - 1) });
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getLastestBooks(page: number, limit: number){
