@@ -27,12 +27,12 @@ export class MovieService {
         .andWhere( genre != '' ? "GenreEntity.id = :gid" : '1=1', { gid: genre })
         .orderBy("MovieEntity.datecreated", "DESC")
         .limit(pageLimit)
-        .off.getManyAndCount();
+        .offset(pageLimit * (currentPage - 1))
+        .getManyAndCount();
         return {
             data: result,
             count: total
-        }set(pageLimit * (currentPage - 1))
-        
+        }
     }
 
     async getLastestMovies(page: number, limit: number){
