@@ -20,7 +20,7 @@ export class MovieService {
         //     datecreated: "DESC"
         // }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
 
-        return await this.movieRepository.createQueryBuilder("MovieEntity")
+        const [result, total] = await this.movieRepository.createQueryBuilder("MovieEntity")
         .leftJoinAndSelect("MovieEntity.genre", "GenreEntity")
         .where(search != '' ? "MovieEntity.name ILIKE :name" : '1=1', { name: '%' + search + '%' })
         .andWhere(country != '' ? "MovieEntity.country ILIKE :country" : '1=1', { country: '%' + country + '%' })
@@ -28,7 +28,11 @@ export class MovieService {
         .orderBy("MovieEntity.datecreated", "DESC")
         .limit(pageLimit)
         .offset(pageLimit * (currentPage - 1))
-        .getMany();
+        .getManyAndCount();
+        return {
+            data: result,
+            count: total
+        }
     }
 
     async getLastestMovies(page: number, limit: number){
