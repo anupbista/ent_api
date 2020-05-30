@@ -69,7 +69,7 @@ export class BookController {
 		required: false,
 		type: Number
 	})
-	getLastestMovies(@Query('page') page: number, @Query('limit') limit: number) {
+	getLastestBooks(@Query('page') page: number, @Query('limit') limit: number) {
 		return this.bookService.getLastestBooks(page, limit);
 	}
 
@@ -86,7 +86,7 @@ export class BookController {
 		required: false,
 		type: Number
 	})
-	getPopularMovies(@Query('page') page: number, @Query('limit') limit: number) {
+	getPopularBooks(@Query('page') page: number, @Query('limit') limit: number) {
 		return this.bookService.getPopularBooks(page, limit);
 	}
 
@@ -126,7 +126,7 @@ export class BookController {
 
 	@Get('/dashboard')
     @UseGuards(TokenGuard, JwtAuthGuard)
-    @ApiTags('Book')
+    @ApiTags('Books')
     @ApiOkResponse({ description: 'Success' })
     @ApiBearerAuth('Authorization')
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })

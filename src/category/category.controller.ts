@@ -11,8 +11,8 @@ import {
 	UseGuards,
 	Query
 } from '@nestjs/common';
-import { GenreService } from './genre.service';
-import { GenreDTO } from './genre.dto';
+import { CategoryService } from './category.service';
+import { CategoryDTO } from './category.dto';
 import { TokenGuard } from '../auth/token.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
@@ -25,13 +25,13 @@ import {
 	ApiQuery
 } from '@nestjs/swagger';
 
-@Controller('genre')
-export class GenreController {
-	constructor(private genreService: GenreService) {}
+@Controller('category')
+export class CategoryController {
+	constructor(private categoryService: CategoryService) {}
 
 	@Get()
 	// @UseGuards(TokenGuard, JwtAuthGuard)
-	@ApiTags('Genre')
+	@ApiTags('Category')
 	@ApiOkResponse({ description: 'Success' })
 	// @ApiBearerAuth('Authorization')
 	// @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
@@ -50,59 +50,60 @@ export class GenreController {
 		required: false,
 		type: Number
 	  })
-	  getAllGenres(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
-		return this.genreService.getAllGenres(page, limit, search);
+      getAllCategory(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
+		return this.categoryService.getAllCategory(page, limit, search);
 	}
 
 	@Get('/dashboard')
     @UseGuards(TokenGuard, JwtAuthGuard)
-    @ApiTags('Genre')
+    @ApiTags('Category')
     @ApiOkResponse({ description: 'Success' })
     @ApiBearerAuth('Authorization')
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-    getGenreDashboard(){
-        return this.genreService.getGenreDashboard();
+    getCategoryDashboard(){
+        return this.categoryService.getCategoryDashboard();
     }
 
 	@Post()
 	@UseGuards(TokenGuard, JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
-	@ApiTags('Genre')
+	@ApiTags('Category')
 	@ApiCreatedResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
-	@ApiBody({ type: GenreDTO })
+	@ApiBody({ type: CategoryDTO })
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	saveGenre(@Body() data: GenreDTO) {
-		return this.genreService.saveGenre(data);
+	saveCategory(@Body() data: CategoryDTO) {
+		return this.categoryService.saveCategory(data);
 	}
 
 	@Get(':id')
 	@UseGuards(TokenGuard, JwtAuthGuard)
-	@ApiTags('Genre')
+	@ApiTags('Category')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	getGenre(@Param('id') id: string) {
-		return this.genreService.getGenre(id);
+	getCategory(@Param('id') id: string) {
+		return this.categoryService.getCategory(id);
 	}
 
 	@Patch(':id')
 	@UseGuards(TokenGuard, JwtAuthGuard)
-	@ApiTags('Genre')
+	@ApiTags('Category')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	updateGenre(@Param('id') id: string, @Body() data: Partial<GenreDTO>) {
-		return this.genreService.updateGenre(id, data);
+	@ApiBody({ type: CategoryDTO })
+	updateCategory(@Param('id') id: string, @Body() data: Partial<CategoryDTO>) {
+		return this.categoryService.updateCategory(id, data);
 	}
 
 	@Delete(':id')
 	@UseGuards(TokenGuard, JwtAuthGuard)
-	@ApiTags('Genre')
+	@ApiTags('Category')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	deleteGenre(@Param('id') id: string) {
-		return this.genreService.deleteGenre(id);
+	deleteCategory(@Param('id') id: string) {
+		return this.categoryService.deleteCategory(id);
 	}
 }

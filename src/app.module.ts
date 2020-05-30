@@ -13,9 +13,11 @@ import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { BookModule } from './book/book.module';
 import { UserInfoModule } from './userinfo/userinfo.module';
+import { CategoryModule } from './category/category.module';
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), MovieModule, GenreModule, UserModule, SharedModule, AuthModule, BookModule, UserInfoModule],
+  imports: [TypeOrmModule.forRoot(), MovieModule, GenreModule, UserModule, SharedModule, AuthModule, BookModule, UserInfoModule, CategoryModule, GameModule],
   controllers: [AppController],
   providers: [
     AppService,

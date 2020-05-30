@@ -12,8 +12,8 @@ import {
 	UseGuards,
 	Query
 } from '@nestjs/common';
-import { MovieService } from './movie.service';
-import { MovieDTO } from './movie.dto';
+import { GameService } from './game.service';
+import { GameDTO } from './game.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { editFileName, imageFileFilter } from '../utils/file-upload.util';
@@ -30,12 +30,12 @@ import {
 	ApiQuery
 } from '@nestjs/swagger';
 
-@Controller('movies')
-export class MovieController {
-	constructor(private movieService: MovieService) {}
+@Controller('games')
+export class GameController {
+	constructor(private gameService: GameService) {}
 
 	@Get()
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -53,21 +53,16 @@ export class MovieController {
 		type: String
 	})
 	@ApiQuery({
-		name: 'genre',
+		name: 'category',
 		required: false,
 		type: String
 	})
-	@ApiQuery({
-		name: 'country',
-		required: false,
-		type: String
-	})
-	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string, @Query('genre') genre: string, @Query('country') country: string) {
-		return this.movieService.getAllMovies(page, limit, search, genre, country);
+	getAllGames(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string, @Query('category') category: string) {
+		return this.gameService.getAllGames(page, limit, search, category);
 	}
 
 	@Get('/latest')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -79,12 +74,12 @@ export class MovieController {
 		required: false,
 		type: Number
 	})
-	getLastestMovies(@Query('page') page: number, @Query('limit') limit: number) {
-		return this.movieService.getLastestMovies(page, limit);
+	getLastestGames(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.gameService.getLastestGames(page, limit);
 	}
 
 	@Get('/popular')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -96,12 +91,12 @@ export class MovieController {
 		required: false,
 		type: Number
 	})
-	getPopularMovies(@Query('page') page: number, @Query('limit') limit: number) {
-		return this.movieService.getPopularMovies(page, limit);
+	getPopularGames(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.gameService.getPopularGames(page, limit);
 	}
 
 	@Get('/upcoming')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -113,12 +108,12 @@ export class MovieController {
 		required: false,
 		type: Number
 	})
-	getUpcomingMovies(@Query('page') page: number, @Query('limit') limit: number) {
-		return this.movieService.getUpcomingMovies(page, limit);
+	getUpcomingGames(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.gameService.getUpcomingGames(page, limit);
 	}
 
 	@Get('/toprated')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -130,76 +125,76 @@ export class MovieController {
 		required: false,
 		type: Number
 	})
-	getTopRatedMovies(@Query('page') page: number, @Query('limit') limit: number) {
-		return this.movieService.getTopRatedMovies(page, limit);
+	getTopRatedGames(@Query('page') page: number, @Query('limit') limit: number) {
+		return this.gameService.getTopRatedGames(page, limit);
 	}
 
 	@Get('/dashboard')
     @UseGuards(TokenGuard, JwtAuthGuard)
-    @ApiTags('Movies')
+    @ApiTags('Games')
     @ApiOkResponse({ description: 'Success' })
     @ApiBearerAuth('Authorization')
     @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-    getMovieDashboard(){
-        return this.movieService.getMovieDashboard();
+    getGameDashboard(){
+        return this.gameService.getGameDashboard();
     }
 
 	@Post(':id/image')
 	@UseGuards(TokenGuard, JwtAuthGuard)
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
-				destination: './uploads/movies',
+				destination: './uploads/games',
 				filename: editFileName
 			}),
 			fileFilter: imageFileFilter
 		})
 	)
-	createMovieImage(@Param('id') id: string, @UploadedFile() file) {
-		return this.movieService.updateMovie(id, { imagepath: file.path });
+	createGameImage(@Param('id') id: string, @UploadedFile() file) {
+		return this.gameService.updateGame(id, { imagepath: file.path });
 	}
 
 	@Post()
 	@UseGuards(TokenGuard, JwtAuthGuard)
 	@UsePipes(new ValidationPipe())
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiCreatedResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	@ApiBody({ type: MovieDTO })
-	createMovie(@Body() data: MovieDTO) {
-		return this.movieService.saveMovie(data);
+	@ApiBody({ type: GameDTO })
+	createGame(@Body() data: GameDTO) {
+		return this.gameService.saveGame(data);
 	}
 
 	@Get(':id')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
-	getMovie(@Param('id') id: string) {
-		return this.movieService.getMovie(id);
+	getGame(@Param('id') id: string) {
+		return this.gameService.getGame(id);
 	}
 
 	@Patch(':id')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@UseGuards(TokenGuard, JwtAuthGuard)
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-	@ApiBody({ type: MovieDTO })
-	patchMovie(@Param('id') id: string, @Body() data: Partial<MovieDTO>) {
-		return this.movieService.updateMovie(id, data);
+	@ApiBody({ type: GameDTO })
+	patchGame(@Param('id') id: string, @Body() data: Partial<GameDTO>) {
+		return this.gameService.updateGame(id, data);
 	}
 
 	@Delete(':id')
-	@ApiTags('Movies')
+	@ApiTags('Games')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiBearerAuth('Authorization')
 	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
 	@UseGuards(TokenGuard, JwtAuthGuard)
-	deleteMovie(@Param('id') id: string) {
-		return this.movieService.deleteMovie(id);
+	deleteGame(@Param('id') id: string) {
+		return this.gameService.deleteGame(id);
 	}
 }
