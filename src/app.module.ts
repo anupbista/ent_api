@@ -15,9 +15,12 @@ import { BookModule } from './book/book.module';
 import { UserInfoModule } from './userinfo/userinfo.module';
 import { CategoryModule } from './category/category.module';
 import { GameModule } from './game/game.module';
+import { YoutubevideoModule } from './youtubevideo/youtubevideo.module';
+import { YoutubecategoryModule } from './youtubecategory/youtubecategory.module';
+import { YoutubechannelModule } from './youtubechannel/youtubechannel.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), MovieModule, GenreModule, UserModule, SharedModule, AuthModule, BookModule, UserInfoModule, CategoryModule, GameModule],
+  imports: [TypeOrmModule.forRoot(), MovieModule, GenreModule, UserModule, SharedModule, AuthModule, BookModule, UserInfoModule, CategoryModule, GameModule, YoutubevideoModule, YoutubecategoryModule, YoutubechannelModule],
   controllers: [AppController],
   providers: [
     AppService,
