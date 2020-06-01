@@ -26,8 +26,8 @@ async function bootstrap() {
 		disableErrorMessages: false,
 	  }));
 	const options = new DocumentBuilder()
-		.setTitle('Ent API')
-		.setDescription('API for Ent')
+		.setTitle('trends API')
+		.setDescription('API for trends')
 		.setVersion('1.0')
 		.addBearerAuth({
 			type: 'http', scheme: 'bearer', bearerFormat: 'JWT'}, 'Authorization'
