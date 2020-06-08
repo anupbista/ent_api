@@ -5,12 +5,15 @@ import {
 	Patch,
 	Delete,
 	Body,
+	Headers,
 	Param,
 	UseInterceptors,
 	UploadedFile,
 	UsePipes,
 	UseGuards,
-	Query
+	Query,
+	Res,
+	Header
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieDTO } from './movie.dto';
@@ -29,6 +32,8 @@ import {
 	ApiBody,
 	ApiQuery
 } from '@nestjs/swagger';
+import * as jwt_decode from 'jwt-decode';
+import { pipe } from 'rxjs';
 
 @Controller('movies')
 export class MovieController {
@@ -64,6 +69,26 @@ export class MovieController {
 	})
 	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string, @Query('genre') genre: string, @Query('country') country: string) {
 		return this.movieService.getAllMovies(page, limit, search, genre, country);
+	}
+
+	@Get('/report')
+	@ApiTags('Movies')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	async getReport(@Query('page') page: number, @Query('limit') limit: number, @Headers() headers, @Res() response) {
+		let token = headers.authorization.split(' ')[1];
+		let decodedtoken = jwt_decode(token);
+		let stream = await this.movieService.getReport(page, limit, decodedtoken.sub);
+		return stream.pipe(response);
 	}
 
 	@Get('/latest')

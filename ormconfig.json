@@ -6,7 +6,7 @@
     "username": "dfusmmmtmhmkvu",
     "password": "72ecad770621409db66ec7c8327cc898b57916c10333e45751119c0a005977ec",
     "database": "d9d352iio37qd3",
-    "synchronize": true,
+    "synchronize": false,
     "dropSchema": false,
     "ssl": {
         "rejectUnauthorized": false
