@@ -95,9 +95,13 @@ export class MovieController {
 		let token = headers.authorization.split(' ')[1];
 		let decodedtoken = jwt_decode(token);
 		let stream = await this.movieService.getReport(page, limit, decodedtoken.sub);
-		response.setHeader('Content-disposition', `attachment;filename=data.xls`);
+		response.setHeader('Content-disposition', `attachment;filename=data.xlsx`);
 		response.setHeader('Content-type', 'application/vnd.ms-excel');
-		return stream.pipe(response);
+		// This will wait until we know the readable stream is actually valid before piping
+		stream.on('open', function () {
+			// This just pipes the read stream to the response object (which goes to the client)
+			return stream.pipe(response);
+		});
 	}
 
 	@Get('/latest')
