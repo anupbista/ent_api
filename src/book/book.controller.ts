@@ -10,7 +10,9 @@ import {
 	UploadedFile,
 	UsePipes,
 	UseGuards,
-	Query
+	Query,
+	Headers,
+	Res
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { BookDTO } from './book.dto';
@@ -29,6 +31,9 @@ import {
 	ApiCreatedResponse,
 	ApiQuery
 } from '@nestjs/swagger';
+import * as jwt_decode from 'jwt-decode';
+import { ReadStream } from 'fs';
+import * as fs from 'fs';
 
 @Controller('books')
 export class BookController {
@@ -54,6 +59,33 @@ export class BookController {
 	})
 	getAllBooks(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string) {
 		return this.bookService.getAllBooks(page, limit, search);
+	}
+
+	@Get('/report')
+	@ApiTags('Books')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number
+	})
+	async getReport(@Query('page') page: number, @Query('limit') limit: number, @Headers() headers, @Res() response) {
+		let token = headers.authorization.split(' ')[1];
+		let decodedtoken = jwt_decode(token);
+		let stream: ReadStream = await this.bookService.getReport(page, limit, decodedtoken.sub);
+		let filename = stream.path;
+		response.setHeader('Content-disposition', `attachment; filename=${filename}`);
+		response.contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		// This will wait until we know the readable stream is actually valid before piping
+		stream.on('open', function () {
+			// This just pipes the read stream to the response object (which goes to the client)
+			return stream.pipe(response);
+		});
 	}
 
 	@Get('/latest')

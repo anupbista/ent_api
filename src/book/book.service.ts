@@ -3,11 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw, MoreThan } from 'typeorm';
 import { BookEntity } from './book.entity';
 import { BookDTO } from './book.dto';
+import { Workbook } from 'exceljs';
+import { UserService } from '../user/user.service';
+import * as moment from 'moment';
+import * as fs from 'fs';
 
 @Injectable()
 export class BookService {
 
-    constructor(@InjectRepository(BookEntity) private bookRepository: Repository<BookEntity>){
+    constructor(@InjectRepository(BookEntity) private bookRepository: Repository<BookEntity>, private readonly userService: UserService){
 
     }
 
@@ -25,6 +29,80 @@ export class BookService {
         }
     }
 
+    async getReport(page: number, limit: number, userid: string) {
+		const pageLimit = limit || 20;
+		const currentPage = page || 1;
+
+		let user = await this.userService.getUser(userid);
+		let books = await this.bookRepository.find({
+			order: {
+				datecreated: 'DESC'
+			},
+			take: pageLimit,
+			skip: pageLimit * (currentPage - 1)
+		});
+
+		let workbook = new Workbook();
+		(workbook.creator = user.lastname), user.firstname;
+		(workbook.lastModifiedBy = user.lastname), user.firstname;
+		workbook.created = new Date();
+		workbook.modified = new Date();
+		workbook.lastPrinted = new Date();
+		workbook.properties.date1904 = true;
+
+		workbook.views = [
+			{
+				x: 0,
+				y: 0,
+				width: 10000,
+				height: 20000,
+				firstSheet: 0,
+				activeTab: 1,
+				visibility: 'visible'
+			}
+		];
+		let worksheet = workbook.addWorksheet('Movies');
+		worksheet.columns = [
+			{ header: 'Id', key: 'id', width: 10 },
+			{ header: 'Name', key: 'name', width: 32 },
+			{ header: 'Description', key: 'description', width: 32 },
+			{ header: 'Release date', key: 'releasedate', width: 32 },
+			{ header: 'Download', key: 'download', width: 32 },
+			{ header: 'Watch', key: 'watch', width: 32 },
+			{ header: 'Rating', key: 'rating', width: 32 },
+			{ header: 'Country', key: 'country', width: 32 },
+			{ header: 'Genre', key: 'genre', width: 32 }
+		];
+
+		books.forEach((book, index) => {
+			worksheet.addRow({
+				id: index,
+				name: book.name,
+				description: book.description,
+				releasedate: book.releasedate,
+				download: book.downloadlink,
+				read: book.readlink,
+                rating: book.rating,
+                author: book.author,
+                publisher: book.publisher
+			});
+		});
+		if (!fs.existsSync('reports')) {
+			fs.mkdirSync('reports');
+		}
+		let filename = `reports/books_${moment(new Date()).format('MMDDYYYYHHmmss')}.xlsx`;
+		await workbook.xlsx.writeFile(filename);
+		let stream: fs.ReadStream = fs.createReadStream(filename);
+		stream.on('close', () => {
+			fs.unlink(filename, (error) => {
+				if (error) {
+					throw error;
+				}
+			});
+		});
+		return stream;
+	}
+    
     async getLastestBooks(page: number, limit: number){
         const pageLimit = limit || 20
         const currentPage = page || 1

@@ -102,7 +102,7 @@ export class MovieService {
 		if (!fs.existsSync('reports')) {
 			fs.mkdirSync('reports');
 		}
-		let filename = `reports/movies_${moment(new Date()).format('MMDDYYYYHHmmss')}.xlsx;`;
+		let filename = `reports/movies_${moment(new Date()).format('MMDDYYYYHHmmss')}.xlsx`;
 		await workbook.xlsx.writeFile(filename);
 		let stream: fs.ReadStream = fs.createReadStream(filename);
 		stream.on('close', () => {

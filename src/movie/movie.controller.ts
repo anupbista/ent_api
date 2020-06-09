@@ -12,8 +12,7 @@ import {
 	UsePipes,
 	UseGuards,
 	Query,
-	Res,
-	Header
+	Res
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieDTO } from './movie.dto';
@@ -33,8 +32,8 @@ import {
 	ApiQuery
 } from '@nestjs/swagger';
 import * as jwt_decode from 'jwt-decode';
-import { pipe } from 'rxjs';
 import { ReadStream } from 'fs';
+import * as fs from 'fs';
 
 @Controller('movies')
 export class MovieController {
@@ -80,7 +79,6 @@ export class MovieController {
 
 	@Get('/report')
 	@ApiTags('Movies')
-	@Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -96,7 +94,8 @@ export class MovieController {
 		let token = headers.authorization.split(' ')[1];
 		let decodedtoken = jwt_decode(token);
 		let stream: ReadStream = await this.movieService.getReport(page, limit, decodedtoken.sub);
-		response.setHeader('Content-disposition', `attachment`);
+		let filename = stream.path;
+		response.setHeader('Content-disposition', `attachment; filename=${filename}`);
 		response.contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		// This will wait until we know the readable stream is actually valid before piping
 		stream.on('open', function () {
