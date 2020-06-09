@@ -64,6 +64,9 @@ export class BookController {
 	@Get('/report')
 	@ApiTags('Books')
 	@ApiOkResponse({ description: 'Success' })
+	@UseGuards(TokenGuard, JwtAuthGuard)
+	@ApiBearerAuth('Authorization')
+	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
 	@ApiQuery({
 		name: 'limit',
 		required: false,

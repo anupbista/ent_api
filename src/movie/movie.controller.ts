@@ -80,6 +80,9 @@ export class MovieController {
 	@Get('/report')
 	@ApiTags('Movies')
 	@ApiOkResponse({ description: 'Success' })
+	@UseGuards(TokenGuard, JwtAuthGuard)
+	@ApiBearerAuth('Authorization')
+	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
 	@ApiQuery({
 		name: 'limit',
 		required: false,

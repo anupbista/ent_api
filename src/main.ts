@@ -17,7 +17,8 @@ async function bootstrap() {
         "preflightContinue": false,
         "optionsSuccessStatus": 204,
 		"credentials":true,
-		"allowedHeaders": "Content-Type, Accept, Origin, Authorization, X-Requested-With, Content-Disposition",
+		"allowedHeaders": "Content-Type, Accept, Origin, Authorization, X-Requested-With",
+		"exposedHeaders": "Content-Disposition"
     }
 	app.enableCors(cors_options);
 	app.setGlobalPrefix('api/v1');
