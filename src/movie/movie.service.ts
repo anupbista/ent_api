@@ -10,7 +10,10 @@ import * as fs from 'fs';
 
 @Injectable()
 export class MovieService {
-	constructor(@InjectRepository(MovieEntity) private movieRepository: Repository<MovieEntity>, private readonly userService: UserService,) {}
+	constructor(
+		@InjectRepository(MovieEntity) private movieRepository: Repository<MovieEntity>,
+		private readonly userService: UserService
+	) {}
 
 	async getAllMovies(page: number, limit: number, search: string = '', genre: string = '', country: string = '') {
 		const pageLimit = limit || 20;
@@ -38,17 +41,22 @@ export class MovieService {
 	}
 
 	async getReport(page: number, limit: number, userid: string) {
-        const pageLimit = limit || 20;
-        const currentPage = page || 1;
-        
-        let user = await this.userService.getUser(userid);
-        let movies = await this.movieRepository.find({ order: {
-		    datecreated: "DESC"
-        }, relations: ["genre"], take: pageLimit, skip: pageLimit * (currentPage - 1) });
-        
-        let workbook = new Workbook();
-		workbook.creator = user.lastname, user.firstname;
-		workbook.lastModifiedBy = user.lastname, user.firstname;
+		const pageLimit = limit || 20;
+		const currentPage = page || 1;
+
+		let user = await this.userService.getUser(userid);
+		let movies = await this.movieRepository.find({
+			order: {
+				datecreated: 'DESC'
+			},
+			relations: [ 'genre' ],
+			take: pageLimit,
+			skip: pageLimit * (currentPage - 1)
+		});
+
+		let workbook = new Workbook();
+		(workbook.creator = user.lastname), user.firstname;
+		(workbook.lastModifiedBy = user.lastname), user.firstname;
 		workbook.created = new Date();
 		workbook.modified = new Date();
 		workbook.lastPrinted = new Date();
@@ -75,18 +83,36 @@ export class MovieService {
 			{ header: 'Watch', key: 'watch', width: 32 },
 			{ header: 'Rating', key: 'rating', width: 32 },
 			{ header: 'Country', key: 'country', width: 32 },
-			{ header: 'Genre', key: 'genre', width: 32 },
+			{ header: 'Genre', key: 'genre', width: 32 }
 		];
-        
-        movies.forEach( (movie, index) => {
-            worksheet.addRow({ id: index, name: movie.name, description: movie.description, releasedate: movie.releasedate, download: movie.downloadlink, watch: movie.watchlink, rating: movie.rating, country: movie.country, genre: movie.genre[0].name});
-        })
-        if (!fs.existsSync('reports')){
-            fs.mkdirSync('reports');
-        }
-        let filename = `reports/movies_${moment(new Date()).format('MMDDYYYYHHmmss')}.xlsx;`;
-        await workbook.xlsx.writeFile(filename);
-        return fs.createReadStream(filename);
+
+		movies.forEach((movie, index) => {
+			worksheet.addRow({
+				id: index,
+				name: movie.name,
+				description: movie.description,
+				releasedate: movie.releasedate,
+				download: movie.downloadlink,
+				watch: movie.watchlink,
+				rating: movie.rating,
+				country: movie.country,
+				genre: movie.genre[0].name
+			});
+		});
+		if (!fs.existsSync('reports')) {
+			fs.mkdirSync('reports');
+		}
+		let filename = `reports/movies_${moment(new Date()).format('MMDDYYYYHHmmss')}.xlsx;`;
+		await workbook.xlsx.writeFile(filename);
+		let stream: fs.ReadStream = fs.createReadStream(filename);
+		stream.on('close', () => {
+			fs.unlink(filename, (error) => {
+				if (error) {
+					throw error;
+				}
+			});
+		});
+		return stream;
 	}
 
 	async getLastestMovies(page: number, limit: number) {

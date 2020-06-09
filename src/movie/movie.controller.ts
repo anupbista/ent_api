@@ -34,6 +34,7 @@ import {
 } from '@nestjs/swagger';
 import * as jwt_decode from 'jwt-decode';
 import { pipe } from 'rxjs';
+import { ReadStream } from 'fs';
 
 @Controller('movies')
 export class MovieController {
@@ -94,9 +95,9 @@ export class MovieController {
 	async getReport(@Query('page') page: number, @Query('limit') limit: number, @Headers() headers, @Res() response) {
 		let token = headers.authorization.split(' ')[1];
 		let decodedtoken = jwt_decode(token);
-		let stream = await this.movieService.getReport(page, limit, decodedtoken.sub);
-		response.setHeader('Content-disposition', `attachment;filename=data.xlsx`);
-		response.setHeader('Content-type', 'application/vnd.ms-excel');
+		let stream: ReadStream = await this.movieService.getReport(page, limit, decodedtoken.sub);
+		response.setHeader('Content-disposition', `attachment`);
+		response.con('Content-type', 'application/vnd.ms-excel');
 		// This will wait until we know the readable stream is actually valid before piping
 		stream.on('open', function () {
 			// This just pipes the read stream to the response object (which goes to the client)
