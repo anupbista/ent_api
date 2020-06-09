@@ -68,10 +68,10 @@ export class BookService {
 			{ header: 'Description', key: 'description', width: 32 },
 			{ header: 'Release date', key: 'releasedate', width: 32 },
 			{ header: 'Download', key: 'download', width: 32 },
-			{ header: 'Watch', key: 'watch', width: 32 },
+			{ header: 'Read', key: 'read', width: 32 },
 			{ header: 'Rating', key: 'rating', width: 32 },
-			{ header: 'Country', key: 'country', width: 32 },
-			{ header: 'Genre', key: 'genre', width: 32 }
+			{ header: 'Author', key: 'author', width: 32 },
+			{ header: 'Publisher', key: 'publisher', width: 32 }
 		];
 
 		books.forEach((book, index) => {
