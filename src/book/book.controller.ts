@@ -79,7 +79,7 @@ export class BookController {
 		let decodedtoken = jwt_decode(token);
 		let stream: ReadStream = await this.bookService.getReport(page, limit, decodedtoken.sub);
 		let filename = stream.path;
-		response.setHeader('Content-disposition', `attachment; filename=${filename}`);
+		response.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 		response.contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		// This will wait until we know the readable stream is actually valid before piping
 		stream.on('open', function () {
