@@ -67,12 +67,19 @@ export class MovieController {
 		required: false,
 		type: String
 	})
-	getAllMovies(@Query('page') page: number, @Query('limit') limit: number, @Query('search') search: string, @Query('genre') genre: string, @Query('country') country: string) {
+	getAllMovies(
+		@Query('page') page: number,
+		@Query('limit') limit: number,
+		@Query('search') search: string,
+		@Query('genre') genre: string,
+		@Query('country') country: string
+	) {
 		return this.movieService.getAllMovies(page, limit, search, genre, country);
 	}
 
 	@Get('/report')
 	@ApiTags('Movies')
+	@Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 	@ApiOkResponse({ description: 'Success' })
 	@ApiQuery({
 		name: 'limit',
@@ -88,6 +95,8 @@ export class MovieController {
 		let token = headers.authorization.split(' ')[1];
 		let decodedtoken = jwt_decode(token);
 		let stream = await this.movieService.getReport(page, limit, decodedtoken.sub);
+		response.setHeader('Content-disposition', `attachment;filename=data.xls`);
+		response.setHeader('Content-type', 'application/vnd.ms-excel');
 		return stream.pipe(response);
 	}
 
@@ -160,14 +169,14 @@ export class MovieController {
 	}
 
 	@Get('/dashboard')
-    @UseGuards(TokenGuard, JwtAuthGuard)
-    @ApiTags('Movies')
-    @ApiOkResponse({ description: 'Success' })
-    @ApiBearerAuth('Authorization')
-    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-    getMovieDashboard(){
-        return this.movieService.getMovieDashboard();
-    }
+	@UseGuards(TokenGuard, JwtAuthGuard)
+	@ApiTags('Movies')
+	@ApiOkResponse({ description: 'Success' })
+	@ApiBearerAuth('Authorization')
+	@ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+	getMovieDashboard() {
+		return this.movieService.getMovieDashboard();
+	}
 
 	@Post(':id/image')
 	@UseGuards(TokenGuard, JwtAuthGuard)
