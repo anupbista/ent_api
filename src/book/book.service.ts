@@ -61,7 +61,7 @@ export class BookService {
 				visibility: 'visible'
 			}
 		];
-		let worksheet = workbook.addWorksheet('Movies');
+		let worksheet = workbook.addWorksheet('Books');
 		worksheet.columns = [
 			{ header: 'Id', key: 'id', width: 10 },
 			{ header: 'Name', key: 'name', width: 32 },
